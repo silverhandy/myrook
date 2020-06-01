@@ -160,7 +160,7 @@ spec:
     spec:
       accessModes:
         - "ReadWriteOnce"
-      storageClassName: local-sc-fs
+      storageClassName: local-sc
       resources:
         requests:
           storage: 16Gi

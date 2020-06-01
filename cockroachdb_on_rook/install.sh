@@ -1,6 +1,10 @@
 #!/bin/bash
 
-if [[ "$1" == "rook-local" ]]; then
+if [[ "$1" == "local-cockroach" ]]; then
+    kubectl apply -f cockroachdb-statefulset-local.yaml
+    kubectl apply -f cluster-init.yaml
+
+elif [[ "$1" == "local-rook-csi-cockroach" ]]; then
     kubectl apply -f ./rook/common.yaml
     kubectl apply -f ./rook/operator.yaml
     kubectl apply -f local-pv.yaml
@@ -8,7 +12,40 @@ if [[ "$1" == "rook-local" ]]; then
     kubectl apply -f ./rook/cluster-on-pvc-local.yaml
     kubectl apply -f ./rook/toolbox.yaml
     kubectl apply -f ./rook/cephcsi-storageclass.yaml
-    kubectl apply -f cockroachdb-statefulset.yaml
+    kubectl apply -f cockroachdb-statefulset-cephcsi.yaml
+    kubectl apply -f cluster-init.yaml
+
+elif [[ "$1" == "meta-rook-csi-cockroach" ]]; then
+    kubectl apply -f ./rook/common.yaml
+    kubectl apply -f ./rook/operator.yaml
+    kubectl apply -f local-pv.yaml
+    kubectl apply -f local-sc.yaml
+    kubectl apply -f ./rook/cluster-on-pvc-meta.yaml
+    kubectl apply -f ./rook/toolbox.yaml
+    kubectl apply -f ./rook/cephcsi-storageclass.yaml
+    kubectl apply -f cockroachdb-statefulset-cephcsi.yaml
+    kubectl apply -f cluster-init.yaml
+
+elif [[ "$1" == "wal-rook-csi-cockroach" ]]; then
+    kubectl apply -f ./rook/common-latest.yaml
+    kubectl apply -f ./rook/operator-wal.yaml
+    kubectl apply -f local-pv.yaml
+    kubectl apply -f local-sc.yaml
+    kubectl apply -f ./rook/cluster-on-pvc-wal.yaml
+    kubectl apply -f ./rook/toolbox.yaml
+    kubectl apply -f ./rook/cephcsi-storageclass.yaml
+    kubectl apply -f cockroachdb-statefulset-cephcsi.yaml
+    kubectl apply -f cluster-init.yaml
+
+elif [[ "$1" == "roc-rook-csi-cockroach" ]]; then
+    kubectl apply -f ./rook/common.yaml
+    kubectl apply -f ./rook/operator.yaml
+    kubectl apply -f local-pv.yaml
+    kubectl apply -f local-sc.yaml
+    kubectl apply -f ./rook/cluster-on-pvc-roc.yaml
+    kubectl apply -f ./rook/toolbox.yaml
+    kubectl apply -f ./rook/cephcsi-storageclass.yaml
+    kubectl apply -f cockroachdb-statefulset-cephcsi.yaml
     kubectl apply -f cluster-init.yaml
 
 elif [[ "$1" == "shutdown" ]]; then
