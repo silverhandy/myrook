@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<workload name="s3-simple" description="simple benchmark for s3">
+  <auth type="none" config="username=admin;password=nexenta1;auth_url=http://10.105.110.57"/>
+  <storage type="s3" config="accesskey=XVOGCC5XL3M70HUBL3NR;secretkey=Mb7BFMZE5HEz7RNiO9WMtqwYZJPbEN1LH050SqQn;endpoint=http://10.105.110.57:80;timeout=600000"/>
+
+  <workflow>
+
+    <workstage name="init">
+      <work type="init" workers="1" config="cprefix=ak;containers=r(1,1)" />
+    </workstage>
+
+    <workstage name="prepare">
+      <work type="prepare" workers="4" config="cprefix=ak;containers=r(1,1);objects=r(1,11);sizes=u(1,64)KB" />
+    </workstage>
+
+    <workstage name="main">
+      <work name="main" workers="8" totalOps="2000">
+        <operation type="read" ratio="80" config="cprefix=ak;containers=u(1,1);objects=u(1,5)" />
+        <operation type="write" ratio="20" config="cprefix=ak;containers=u(1,1);objects=u(6,11);sizes=u(1,64)KB" />
+      </work>
+    </workstage>
+
+    <workstage name="cleanup" closuredelay="30">
+      <work type="cleanup" workers="4" config="cprefix=ak;containers=r(1,1);objects=r(1,11)" />
+    </workstage>
+
+    <workstage name="dispose" closuredelay="0">
+      <work type="dispose" workers="1" config="cprefix=ak;containers=r(1,1)"/>
+    </workstage>
+
+  </workflow>
+
+</workload>

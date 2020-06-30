@@ -4,7 +4,7 @@ metadata:
   name: local-blk1
 spec:
   capacity:
-    storage: 32Gi
+    storage: 64Gi
   volumeMode: Block
   accessModes:
   - ReadWriteOnce
@@ -27,7 +27,7 @@ metadata:
   name: local-blk2
 spec:
   capacity:
-    storage: 32Gi
+    storage: 64Gi
   volumeMode: Block
   accessModes:
   - ReadWriteOnce
@@ -50,7 +50,7 @@ metadata:
   name: local-blk3
 spec:
   capacity:
-    storage: 32Gi
+    storage: 64Gi
   volumeMode: Block
   accessModes:
   - ReadWriteOnce
@@ -66,6 +66,29 @@ spec:
           operator: In
           values:
           - linux
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-blk4
+spec:
+  capacity:
+    storage: 32Gi
+  volumeMode: Block
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-sc
+  local:
+    path: /mnt/disks/blk4
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - master
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -211,7 +234,7 @@ metadata:
   name: local-fs1
 spec:
   capacity:
-    storage: 16Gi
+    storage: 32Gi
   volumeMode: Filesystem
   accessModes:
   - ReadWriteOnce
@@ -234,7 +257,7 @@ metadata:
   name: local-fs2
 spec:
   capacity:
-    storage: 16Gi
+    storage: 32Gi
   volumeMode: Filesystem
   accessModes:
   - ReadWriteOnce

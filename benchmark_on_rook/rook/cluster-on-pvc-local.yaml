@@ -109,7 +109,7 @@ spec:
         spec:
           resources:
             requests:
-              storage: 32Gi
+              storage: 64Gi
           # IMPORTANT: Change the storage class depending on your environment (e.g. local-storage, gp2)
           storageClassName: local-sc
           volumeMode: Block

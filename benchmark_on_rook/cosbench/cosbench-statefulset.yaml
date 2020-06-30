@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: cosbench
+spec:
+  serviceName: "cosbench"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cosbench
+  template:
+    metadata:
+      labels:
+        app: cosbench
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - cosbench
+              topologyKey: kubernetes.io/hostname
+      containers:
+      - name: cosbench
+        image: nexenta/cosbench:latest
+        imagePullPolicy: IfNotPresent
+        # TODO: Change these to appropriate values for the hardware that you're running. You can see
+        # the amount of allocatable resources on each of your Kubernetes nodes by running:
+        #   kubectl describe nodes
+        # resources:
+        #   requests:
+        #     cpu: "16"
+        #     memory: "8Gi"
+        #   limits:
+            # NOTE: Unless you have enabled the non-default Static CPU Management Policy
+            # and are using an integer number of CPUs, we don't recommend setting a CPU limit.
+            # See:
+            #   https://kubernetes.io/docs/tasks/administer-cluster/cpu-management-policies/#static-policy
+            #   https://github.com/kubernetes/kubernetes/issues/51135
+            #   cpu: "16"
+            #   memory: "8Gi" 
+        ports:
+        - containerPort: 19088
+          name: controller
+        - containerPort: 18088
+          name: driver
+        env:
+        - name: ip
+          value: <ip>
+        - name: t
+          value: both
+        - name: n
+          value: 1
+        - name: u
+          value: true
+        #livenessProbe:
+        #  httpGet:
+        #    path: "/health"
+        #    port: http
+        #  initialDelaySeconds: 30
+        #  periodSeconds: 5
+        #readinessProbe:
+        #  httpGet:
+        #    path: "/health?ready=1"
+        #    port: http
+        #  initialDelaySeconds: 10
+        #  periodSeconds: 5
+        #  failureThreshold: 2
+        #env:
+        #- name: HAMMERDB_CHANNEL
+        #  value: kubernetes-insecure
+        command:
+          - "/bin/sleep"
+          - "365d"
+          #- "/bin/bash"
+          #- "-ecx"
+          # The use of qualified `hostname -f` is crucial:
+          # Other nodes aren't able to look up the unqualified hostname.
+          # - "exec /hammerdb/hammerdbcli"
+      # No pre-stop hook is required, a SIGTERM plus some time is all that's
+      # needed for graceful shutdown of a node.
+      #terminationGracePeriodSeconds: 60
+  podManagementPolicy: Parallel
+  updateStrategy:
+    type: RollingUpdate
