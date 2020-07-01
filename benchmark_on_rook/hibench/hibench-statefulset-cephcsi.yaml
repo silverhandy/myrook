@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: cosbench
+  name: hibench
 spec:
-  serviceName: "cosbench"
+  serviceName: "hibench"
   replicas: 1
   selector:
     matchLabels:
-      app: cosbench
+      app: hibench
   template:
     metadata:
       labels:
-        app: cosbench
+        app: hibench
     spec:
       affinity:
         podAntiAffinity:
@@ -23,11 +23,11 @@ spec:
                 - key: app
                   operator: In
                   values:
-                  - cosbench
+                  - hibench
               topologyKey: kubernetes.io/hostname
       containers:
-      - name: cosbench
-        image: nexenta/cosbench:latest
+      - name: hibench
+        image: cjy2181/hadoop-hibench:latest
         imagePullPolicy: IfNotPresent
         # TODO: Change these to appropriate values for the hardware that you're running. You can see
         # the amount of allocatable resources on each of your Kubernetes nodes by running:
@@ -44,20 +44,11 @@ spec:
             #   https://github.com/kubernetes/kubernetes/issues/51135
             #   cpu: "16"
             #   memory: "8Gi" 
-        ports:
-        - name: controller
-          containerPort: 19088
-        - name: driver
-          containerPort: 18088
-        env:
-        - name: ip
-          value: "10.239.241.189"
-        - name: t
-          value: "both"
-        - name: n
-          value: 1
-        - name: u
-          value: true
+        #ports:
+        #- containerPort: 26257
+        #  name: grpc
+        #- containerPort: 8080
+        #  name: http
         #livenessProbe:
         #  httpGet:
         #    path: "/health"
@@ -71,6 +62,9 @@ spec:
         #  initialDelaySeconds: 10
         #  periodSeconds: 5
         #  failureThreshold: 2
+        volumeMounts:
+        - name: datadir
+          mountPath: /tmp/hdfs/data
         #env:
         #- name: HAMMERDB_CHANNEL
         #  value: kubernetes-insecure
@@ -85,6 +79,20 @@ spec:
       # No pre-stop hook is required, a SIGTERM plus some time is all that's
       # needed for graceful shutdown of a node.
       #terminationGracePeriodSeconds: 60
+      volumes:
+      - name: datadir
+        persistentVolumeClaim:
+          claimName: datadir
   podManagementPolicy: Parallel
   updateStrategy:
     type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+    spec:
+      accessModes:
+        - "ReadWriteOnce"
+      storageClassName: rook-ceph-block
+      resources:
+        requests:
+          storage: 32Gi
