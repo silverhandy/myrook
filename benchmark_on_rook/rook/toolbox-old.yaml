@@ -18,21 +18,16 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
       - name: rook-ceph-tools
-        image: localhost:5000/build-aad2e9aa/ceph-amd64:latest
+        image: rook/ceph:v1.3.3
         command: ["/tini"]
         args: ["-g", "--", "/usr/local/bin/toolbox.sh"]
         imagePullPolicy: IfNotPresent
         env:
-          - name: ROOK_CEPH_USERNAME
+          - name: ROOK_ADMIN_SECRET
             valueFrom:
               secretKeyRef:
                 name: rook-ceph-mon
-                key: ceph-username
-          - name: ROOK_CEPH_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: rook-ceph-mon
-                key: ceph-secret
+                key: admin-secret
         volumeMounts:
           - mountPath: /etc/ceph
             name: ceph-config

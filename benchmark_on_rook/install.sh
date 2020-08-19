@@ -27,7 +27,7 @@ elif [[ "$1" == "block-db-rook-csi" ]]; then
     kubectl apply -f ./cockroachdb/cluster-init.yaml
 
 elif [[ "$1" == "block-wal-rook-csi" ]]; then
-    kubectl apply -f ./rook/common-latest.yaml
+    kubectl apply -f ./rook/common-latest2.yaml
     kubectl apply -f ./rook/operator-wal.yaml
     kubectl apply -f local-pv.yaml
     kubectl apply -f local-sc.yaml
@@ -38,8 +38,8 @@ elif [[ "$1" == "block-wal-rook-csi" ]]; then
     #kubectl apply -f ./cockroachdb/cluster-init.yaml
 
 elif [[ "$1" == "block-db-wal-rook-csi" ]]; then
-    kubectl apply -f ./rook/common-latest.yaml
-    kubectl apply -f ./rook/operator-wal.yaml
+    kubectl apply -f ./rook/common-latest2.yaml
+    kubectl apply -f ./rook/operator-latest2.yaml
     kubectl apply -f local-pv.yaml
     kubectl apply -f local-sc.yaml
     kubectl apply -f ./rook/cluster-on-pvc-wal.yaml

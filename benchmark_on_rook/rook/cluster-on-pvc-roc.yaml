@@ -122,21 +122,9 @@ spec:
       #    resources:
       #      requests:
       #         # Find the right size https://docs.ceph.com/docs/master/rados/configuration/bluestore-config-ref/#sizing
-      #        storage: 3Gi
+      #        storage: 10Gi
       #     # IMPORTANT: Change the storage class depending on your environment (e.g. local-storage, gp2)
-      #    storageClassName: local-sc
-      #    volumeMode: Block
-      #    accessModes:
-      #      - ReadWriteOnce
-      #- metadata:
-      #    name: wal
-      #  spec:
-      #    resources:
-      #      requests:
-      #         # Find the right size https://docs.ceph.com/docs/master/rados/configuration/bluestore-config-ref/#sizing
-      #        storage: 3Gi
-      #     # IMPORTANT: Change the storage class depending on your environment (e.g. local-storage, gp2)
-      #    storageClassName: local-sc
+      #    storageClassName: pmem-csi-sc-xfs
       #    volumeMode: Block
       #    accessModes:
       #      - ReadWriteOnce
